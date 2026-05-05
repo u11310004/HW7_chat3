@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>地震學第三章 — 互動式學習網頁</title>
+<meta name="description" content="Seismology Chapter 3: Earth Structure - Interactive Learning Page covering body waves, Moho, core phases, anisotropy, and attenuation.">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;600;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0d1117;--card:#161b22;--accent:#00d2ff;--accent2:#7c3aed;--text:#e6edf3;--text2:#8b949e;--border:#30363d;--success:#3fb950;--danger:#f85149;--warn:#d29922}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans TC','Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+a{color:var(--accent);text-decoration:none}
+
+/* Hero */
+.hero{min-height:60vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:60px 20px;background:linear-gradient(135deg,#0d1117 0%,#1a1040 50%,#0d1117 100%);position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(0,210,255,0.08),transparent 70%);top:-200px;right:-100px;border-radius:50%}
+.hero h1{font-size:clamp(2rem,5vw,3.5rem);font-weight:700;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:16px}
+.hero p{font-size:1.15rem;color:var(--text2);max-width:700px}
+
+/* Nav */
+.toc{position:sticky;top:0;z-index:100;background:rgba(13,17,23,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:10px 20px;overflow-x:auto;white-space:nowrap;scrollbar-width:thin}
+.toc a{display:inline-block;padding:6px 14px;margin:3px 4px;border-radius:20px;font-size:13px;color:var(--text2);border:1px solid var(--border);transition:.3s}
+.toc a:hover,.toc a.active{color:var(--accent);border-color:var(--accent);background:rgba(0,210,255,0.08)}
+
+/* Content */
+.container{max-width:900px;margin:0 auto;padding:20px 24px 80px}
+.topic-section{margin:48px 0;padding:36px;background:var(--card);border-radius:16px;border:1px solid var(--border);animation:fadeUp .5s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.topic-section h2{font-size:1.6rem;margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid var(--accent);display:inline-block}
+.topic-section h4{color:var(--accent);margin:18px 0 8px;font-size:1.1rem}
+.topic-section p,.topic-section li{color:var(--text);margin-bottom:10px}
+.topic-section ul,.topic-section ol{padding-left:24px;margin-bottom:14px}
+.topic-section table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+.topic-section th,.topic-section td{padding:10px 14px;border:1px solid var(--border);text-align:left}
+.topic-section th{background:rgba(0,210,255,0.1);color:var(--accent);font-weight:600}
+.topic-section td{background:rgba(22,27,34,0.6)}
+.topic-section em{color:var(--warn)}
+.topic-section strong{color:#fff}
+.formula{background:rgba(124,58,237,0.12);border-left:4px solid var(--accent2);padding:14px 20px;margin:16px 0;border-radius:0 8px 8px 0;font-family:'Inter',monospace;font-size:15px;color:#d2a8ff;overflow-x:auto}
+.key-point{background:rgba(0,210,255,0.06);border:1px solid rgba(0,210,255,0.2);border-radius:10px;padding:16px 20px;margin:16px 0;font-size:15px}
+.diagram-box{background:rgba(0,0,0,0.3);border-radius:12px;padding:20px;margin:20px 0;text-align:center}
+.diagram-box h4{margin-bottom:12px}
+.caption{color:var(--text2);font-size:13px;margin-top:8px}
+
+/* Topic number badge */
+.topic-section h2::before{content:attr(data-num);display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:14px;font-weight:700;margin-right:12px;vertical-align:middle}
+
+/* Quiz */
+.quiz-container{display:flex;flex-direction:column;gap:24px}
+.quiz-q{background:rgba(0,0,0,0.25);border-radius:12px;padding:20px}
+.q-text{margin-bottom:14px;font-size:15px}
+.q-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.q-btn{padding:10px 14px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);cursor:pointer;font-size:14px;transition:.3s;text-align:left}
+.q-btn:hover{border-color:var(--accent);background:rgba(0,210,255,0.05)}
+.q-btn.correct{border-color:var(--success);background:rgba(63,185,80,0.15);color:var(--success)}
+.q-btn.wrong{border-color:var(--danger);background:rgba(248,81,73,0.1);color:var(--danger)}
+.q-btn.disabled{pointer-events:none;opacity:.7}
+.quiz-submit{margin-top:20px;padding:14px 36px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:16px;font-weight:600;cursor:pointer;transition:.3s;align-self:center}
+.quiz-submit:hover{transform:scale(1.05);box-shadow:0 4px 20px rgba(0,210,255,0.3)}
+
+/* Footer */
+footer{text-align:center;padding:40px;color:var(--text2);font-size:13px;border-top:1px solid var(--border)}
+
+/* Responsive */
+@media(max-width:640px){
+.topic-section{padding:20px 16px}
+.q-options{grid-template-columns:1fr}
+.hero h1{font-size:1.8rem}
+}
+
+/* Scroll progress */
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));z-index:200;transition:width .1s}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar"></div>
+
+<header class="hero">
+<h1>🌍 地震學第三章：地球結構</h1>
+<p>互動式學習——從莫霍面到地核，從折射波到剪力波分裂</p>
+</header>
+
+<nav class="toc" id="toc">
+<a href="#pg-pn-pmp">1. Pg、Pn、Pm…</a><a href="#moho-discovery">2. 如何發現 Moh…</a><a href="#moho-global">3. 全球 Moho …</a><a href="#ray-parameter">4. 什麼是 Ray …</a><a href="#triplication">5. 為何遇到高速帶會…</a><a href="#shadow-zone">6. 為何遇到低速帶會…</a><a href="#cmb-discovery">7. 如何發現核幔邊界？</a><a href="#body-wave-phases">8. 各種體波波相介紹</a><a href="#core-phases">9. Core Pha…</a><a href="#antipodal-focusing">10. 什麼是 Anti…</a><a href="#upper-mantle">11. Upper Ma…</a><a href="#anisotropy">12. Anisotro…</a><a href="#shear-wave-splitting">13. 說明剪力波分裂</a><a href="#sks-splitting">14. 為何使用 SKS…</a><a href="#fig-3-6">15. 解釋圖 3.6-…</a><a href="#attenuation">16. 波傳遞時能量如何…</a><a href="#fig-3-7-1">17. 解釋圖 3.7-1</a><a href="#fig-3-7-5">18. 解釋圖 3.7-5</a><a href="#fig-3-7-10">19. 解釋圖 3.7-10</a><a href="#fig-3-7-18">20. 解釋圖 3.7-18</a>
+<a href="#quiz">📝 測驗</a>
+</nav>
+
+<main class="container">
+<section class="topic-section" id="pg-pn-pmp"><h2 data-num="1">Pg、Pn、PmP 說明</h2>
+<p><strong>Pg（P-granitic）</strong>是在地殼內直接傳播的 P 波直達波，走時曲線為通過原點的直線，斜率為地殼波速的倒數（約 5.6–6.0 km/s）。</p>
+<p><strong>Pn（P-normal）</strong>是沿著莫霍面（Moho）頂部以上部地函的高波速（約 7.7–8.1 km/s）傳播的<em>前導波（Head wave）</em>。當地震波以臨界角入射至莫霍面時，能量沿界面以地函波速水平傳遞，並不斷向上輻射新波列（惠更斯原理）。Pn 的走時曲線斜率較小（1/v₁），但有一個非零的時間截距 τ₁。</p>
+<p><strong>PmP</strong>是從莫霍面反射回地表的 P 波，走時曲線呈<em>雙曲線</em>形。在零距離處走時等於雙程垂直走時 2h₀/v₀。</p>
+<div class="diagram-box">
+<h4>📐 走時曲線示意</h4>
+<svg viewBox="0 0 500 300" style="max-width:500px;width:100%">
+<rect width="500" height="300" fill="#1a1a2e"/>
+<line x1="60" y1="260" x2="460" y2="260" stroke="#555" stroke-width="1.5"/>
+<line x1="60" y1="260" x2="60" y2="30" stroke="#555" stroke-width="1.5"/>
+<text x="250" y="290" fill="#aaa" text-anchor="middle" font-size="13">距離 x (km)</text>
+<text x="20" y="150" fill="#aaa" text-anchor="middle" font-size="13" transform="rotate(-90,20,150)">走時 T (s)</text>
+<!-- Direct Pg -->
+<line x1="60" y1="260" x2="400" y2="80" stroke="#00d2ff" stroke-width="2.5"/>
+<text x="350" y="70" fill="#00d2ff" font-size="13" font-weight="bold">Pg (斜率=1/v₀)</text>
+<!-- Head wave Pn -->
+<line x1="180" y1="200" x2="460" y2="120" stroke="#ff6b6b" stroke-width="2.5"/>
+<line x1="60" y1="228" x2="180" y2="200" stroke="#ff6b6b" stroke-width="1" stroke-dasharray="6,4"/>
+<text x="420" y="110" fill="#ff6b6b" font-size="13" font-weight="bold">Pn (斜率=1/v₁)</text>
+<circle cx="60" cy="228" r="4" fill="#ff6b6b"/>
+<text x="75" y="235" fill="#ff6b6b" font-size="11">τ₁</text>
+<!-- PmP reflection -->
+<path d="M60,226 Q250,100 460,170" fill="none" stroke="#ffd93d" stroke-width="2.5"/>
+<text x="300" y="95" fill="#ffd93d" font-size="13" font-weight="bold">PmP (雙曲線)</text>
+<!-- Crossover -->
+<line x1="260" y1="260" x2="260" y2="155" stroke="#aaa" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="265" y="275" fill="#aaa" font-size="11">x_d</text>
+</svg>
+<p class="caption">在交叉距離 x_d 之後，Pn 成為初達波。</p>
+</div>
+</section><section class="topic-section" id="moho-discovery"><h2 data-num="2">如何發現 Moho 面？</h2>
+<p>1909 年，克羅埃西亞的地震學家<strong>莫霍洛維奇（A. Mohorovičić）</strong>在分析鄰近地震的走時資料時，注意到每一筆地震紀錄中，有<strong>兩組 P 波初達</strong>：</p>
+<ol>
+<li>較慢的直達波（Pg），以約 5.6 km/s 在淺層岩石中傳播；</li>
+<li>較快的前導波（Pn），以約 7.7 km/s 穿越深層高速介質。</li>
+</ol>
+<p>他寫下了走時方程 T<sub>H</sub>(x) = x/v₁ + τ₁，由前導波的走時斜率求出下層波速 v₁，再由截距 τ₁ 反算出上層（地殼）約 50 公里厚。這兩層物質的波速差異如此巨大，必然代表一個<strong>成分根本不同的界面</strong>——這就是「地殼」與「地函」的分界，後世稱為<em>莫霍面（Moho）</em>。</p>
+<div class="key-point">💡 關鍵邏輯：因為前導波（Pn）只有在底層波速 > 上層波速時才會出現。觀察到 Pn 就代表<strong>深處存在一個高速界面</strong>。透過對走時曲線的幾何解析，地殼的厚度和地函的波速就能被精確測定。</div>
+</section><section class="topic-section" id="moho-global"><h2 data-num="3">全球 Moho 面的深度分布</h2>
+<p>莫霍面的深度在全球範圍內存在極大差異，主要取決於地殼型態：</p>
+<table>
+<thead><tr><th>區域</th><th>地殼厚度</th><th>特徵</th></tr></thead>
+<tbody>
+<tr><td>大洋地殼</td><td>~5–10 km</td><td>薄、密度較大（玄武岩為主）</td></tr>
+<tr><td>大陸地殼（平原）</td><td>~30–40 km</td><td>較厚（花崗岩為主）</td></tr>
+<tr><td>造山帶（如喜馬拉雅）</td><td>~60–75 km</td><td>板塊碰撞導致地殼加厚</td></tr>
+</tbody>
+</table>
+<p>IASP91 參考模型使用全球平均<strong>35 km</strong>的地殼厚度，但不同區域可相差數倍。Pn 波速也隨區域改變（約 7.6–8.2 km/s），反映上部地函的成分或溫度差異。</p>
+</section><section class="topic-section" id="ray-parameter"><h2 data-num="4">什麼是 Ray Parameter？</h2>
+<p><strong>射線參數（Ray parameter, p）</strong>是描述地震波射線路徑的核心物理量。</p>
+<p>在<strong>平坦地層</strong>模型中，由 Snell's Law：</p>
+<div class="formula">p = sin i / v = 常數（沿整條射線不變）</div>
+<p>在<strong>球狀地球</strong>模型中，修正為：</p>
+<div class="formula">p = r·sin i / v(r) = 常數</div>
+<p>其中 r 為所在半徑，v(r) 為該深度的波速，i 為入射角。</p>
+<div class="key-point">💡 幾何意義：射線參數就是走時曲線 T(Δ) 的<strong>斜率 dT/dΔ</strong>。因此地表測站間的到達時間差可以直接給出射線參數，而射線參數則決定了這道波到底穿透到了多深（bottoming depth）。p 越小，波穿越得越深。</div>
+</section><section class="topic-section" id="triplication"><h2 data-num="5">為何遇到高速帶會接收到多次到時？（Triplication）</h2>
+<p>當地函中某個深度的波速<strong>急遽增加</strong>（如 410 km 和 660 km 的礦物相變不連續面），會產生「<strong>三合點現象（Triplication）</strong>」：</p>
+<ol>
+<li>波速急升使得部分射線被強烈向上折射。</li>
+<li>不同入射角的射線最終到達地表的<strong>同一個距離</strong>。</li>
+<li>在某段距離範圍內，同一個測站會接收到<strong>三道具有不同射線參數</strong>的波。</li>
+</ol>
+<div class="diagram-box">
+<h4>📐 三合點走時曲線</h4>
+<svg viewBox="0 0 460 250" style="max-width:460px;width:100%">
+<rect width="460" height="250" fill="#1a1a2e"/>
+<line x1="50" y1="220" x2="420" y2="220" stroke="#555" stroke-width="1.5"/>
+<line x1="50" y1="220" x2="50" y2="20" stroke="#555" stroke-width="1.5"/>
+<text x="230" y="245" fill="#aaa" text-anchor="middle" font-size="12">震央距 Δ</text>
+<text x="15" y="120" fill="#aaa" text-anchor="middle" font-size="12" transform="rotate(-90,15,120)">走時 T</text>
+<!-- Normal branch -->
+<path d="M50,200 Q150,120 250,80" fill="none" stroke="#00d2ff" stroke-width="2.5"/>
+<!-- Back branch -->
+<path d="M250,80 Q280,95 300,110" fill="none" stroke="#ff6b6b" stroke-width="2.5"/>
+<!-- Forward again -->
+<path d="M300,110 Q350,90 420,50" fill="none" stroke="#ffd93d" stroke-width="2.5"/>
+<!-- Annotation -->
+<text x="130" y="115" fill="#00d2ff" font-size="11">正常分支</text>
+<text x="255" y="125" fill="#ff6b6b" font-size="11">回折分支</text>
+<text x="350" y="45" fill="#ffd93d" font-size="11">深穿透分支</text>
+<!-- Caustic lines -->
+<line x1="250" y1="75" x2="250" y2="220" stroke="#aaa" stroke-width="1" stroke-dasharray="4,3"/>
+<line x1="300" y1="105" x2="300" y2="220" stroke="#aaa" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="270" y="215" fill="#ff9f43" font-size="11">焦散區</text>
+</svg>
+<p class="caption">焦散區（Caustic）附近波的能量疊加，振幅極大。</p>
+</div>
+</section><section class="topic-section" id="shadow-zone"><h2 data-num="6">為何遇到低速帶會收不到波？（Shadow Zone）</h2>
+<p>與高速帶相反，當波速隨深度<strong>不增反減</strong>（低速層），射線會<em>向下彎折</em>而無法折返。這導致地表某段距離範圍內完全沒有直達波到達，稱為「<strong>陰影區（Shadow Zone）</strong>」。</p>
+<p>最著名的例子是<strong>核幔邊界（CMB）</strong>：</p>
+<ul>
+<li>外核為液態鐵合金，P 波速從地函底部的 ~13.7 km/s 驟降至外核的 ~8.1 km/s。</li>
+<li>這使得 P 波在約 <strong>98°–145°</strong> 之間形成陰影區。</li>
+<li>S 波因外核為液態而完全無法穿越，出現更大範圍的 S 波陰影帶。</li>
+</ul>
+<div class="key-point">💡 但陰影區中仍可觀測到微弱的波：包括繞射波（Pdiff）、內核折射波（PKIKP）、以及散射波（PKP precursors），這些都為研究核幔邊界的精細結構提供了珍貴資訊。</div>
+</section><section class="topic-section" id="cmb-discovery"><h2 data-num="7">如何發現核幔邊界？</h2>
+<p><strong>1906 年</strong>，Richard Oldham 通過觀察地震記錄中 P 波在約 <strong>103°</strong> 後突然消失（即進入陰影區），首次提出地球存在一個<strong>截然不同的內核</strong>區域。</p>
+<p>後續的研究確立了以下證據鏈：</p>
+<ol>
+<li><strong>P 波陰影區</strong>（98°–145°）：由 Snell's Law 可推導出，某深度處必然存在一個波速驟降的界面。</li>
+<li><strong>S 波完全消失</strong>：進入外核後，S 波不再傳播，證明外核是<em>液態</em>。</li>
+<li><strong>Jeffreys（1926）</strong>正式證明外核為液態。</li>
+<li><strong>PcP 與 ScS 反射波</strong>：這些從 CMB 反射回地表的波相，精確定位了 CMB 深度約為 <strong>2891 km</strong>。</li>
+</ol>
+<p>核幔邊界是地球內部<strong>阻抗對比最大</strong>的不連續面，密度從地函的 5.57 g/cm³ 劇增至外核的 9.90 g/cm³。</p>
+</section><section class="topic-section" id="body-wave-phases"><h2 data-num="8">各種體波波相介紹</h2>
+<table>
+<thead><tr><th>符號</th><th>意義</th><th>說明</th></tr></thead>
+<tbody>
+<tr><td><strong>P, S</strong></td><td>直達壓縮波、剪力波</td><td>從震源向下傳遞的基本體波</td></tr>
+<tr><td><strong>p, s</strong></td><td>上行波</td><td>先向上傳至地表反射後向下（如 pP, sP），用於測定震源深度</td></tr>
+<tr><td><strong>PP, SS</strong></td><td>地表反射波</td><td>在地表反射一次；為「最大走時相位」，伴隨 π/2 相位移</td></tr>
+<tr><td><strong>c</strong></td><td>核幔邊界反射</td><td>如 PcP（P波反射）、ScS（S波全反射，訊號極強）</td></tr>
+<tr><td><strong>K</strong></td><td>穿越外核的 P 波</td><td>如 PKP、SKS</td></tr>
+<tr><td><strong>I</strong></td><td>穿越內核的 P 波</td><td>如 PKIKP</td></tr>
+<tr><td><strong>J</strong></td><td>穿越內核的 S 波</td><td>如 PKJKP（近年才被證實觀測到）</td></tr>
+<tr><td><strong>i</strong></td><td>內核邊界反射</td><td>如 PKiKP</td></tr>
+<tr><td><strong>diff</strong></td><td>繞射波</td><td>Pdiff 沿核幔邊界繞射</td></tr>
+</tbody>
+</table>
+</section><section class="topic-section" id="core-phases"><h2 data-num="9">Core Phases 介紹</h2>
+<p>穿越或觸及地核的波相統稱為<strong>核相（Core phases）</strong>，是研究地核結構的關鍵工具。</p>
+<h4>主要核相</h4>
+<ul>
+<li><strong>PKP</strong>：P 波穿越外核後返回地表。因外核低速，PKP 出現在 145°–180° 之間，具有 AB 和 BC 兩個分支。</li>
+<li><strong>PKIKP（DF 分支）</strong>：穿越外核和內核。因內核波速高於外核，波被折返並出現在陰影區內（約 120°–180°）。</li>
+<li><strong>PKiKP</strong>：從內外核邊界反射回來。1936 年 Inge Lehmann 正是發現此波相，首次證明了<em>內核的存在</em>。</li>
+<li><strong>Pdiff</strong>：沿核幔邊界繞射的 P 波，走時曲線變為線性（因所有繞射波底於 CMB 同一深度）。</li>
+<li><strong>SKS / SKKS</strong>：S 波在地函中傳播，穿越外核時轉為 P 波，再轉回 S 波。具有特殊的偏振特性，常用於研究各向異性。</li>
+<li><strong>PKP precursors</strong>：在 PKP-DF 到達前出現的微弱散射波，來自核幔邊界附近的小尺度非均質構造（~10–15 km）。</li>
+</ul>
+</section><section class="topic-section" id="antipodal-focusing"><h2 data-num="10">什麼是 Antipodal Focusing？</h2>
+<p><strong>對蹠聚焦（Antipodal focusing）</strong>是球面幾何造成的波場會聚現象。</p>
+<p>在均質球體地球上：</p>
+<ul>
+<li>表面波的波前呈<strong>環狀擴展</strong>，其周長隨角距離變化為 <code>C = a·sin Δ</code>。</li>
+<li>從震源出發到 Δ = 90° 處，波前最大、能量密度最低。</li>
+<li>繼續傳播到 Δ = 180°（<em>對蹠點</em>），波前<strong>收縮為一點</strong>，所有能量重新匯聚。</li>
+</ul>
+<p>因此，理論上在對蹠點處會觀測到<strong>極大的振幅</strong>。實際上，由於地球呈橢球形且內部存在橫向非均質性，對蹠點的聚焦會被部分散焦。但此效應仍然使得反極點附近的地震記錄振幅顯著增大。</p>
+<div class="formula">能量密度 ∝ 1/(a·sin Δ)　→　Δ→180° 時趨於無限大</div>
+</section><section class="topic-section" id="upper-mantle"><h2 data-num="11">Upper Mantle Structure：低速帶與高速帶</h2>
+<p>上部地函（0–700 km）的波速結構包含幾個關鍵特徵：</p>
+<h4>🔵 低速帶（Low-Velocity Zone, LVZ）</h4>
+<ul>
+<li>深度約 <strong>80–220 km</strong>。</li>
+<li>P 波和 S 波速度均下降，Q 值（品質因子）也最低。</li>
+<li>原因：此處溫度接近岩石固相線（Solidus），可能存在少量<em>部分熔融（Partial melt）</em>。</li>
+<li>此區域即為<strong>軟流圈（Asthenosphere）</strong>，岩石圈板塊在其上滑動。</li>
+</ul>
+<h4>🔴 高速帶 / 不連續面</h4>
+<ul>
+<li><strong>410 km 不連續面</strong>：橄欖石→尖晶石相變，波速急增。</li>
+<li><strong>660 km 不連續面</strong>：尖晶石→鈣鈦礦+方鎂石相變，波速再次急增。</li>
+<li>兩個不連續面之間構成<strong>過渡帶（Transition Zone）</strong>，產生三合點（Triplication）現象。</li>
+</ul>
+</section><section class="topic-section" id="anisotropy"><h2 data-num="12">Anisotropic Earth Structure 說明</h2>
+<p><strong>各向異性（Anisotropy）</strong>指的是地球物質的彈性性質不同方向有差異。傳統的等向性模型只需 2 個彈性常數（λ, µ），而各向異性材料最多需要 <strong>21 個獨立彈性常數</strong>。</p>
+<h4>兩種主要來源</h4>
+<ol>
+<li><strong>SPO（形狀優選定向）</strong>：巨觀的規則排列構造（如水平岩層、平行裂隙），使得平行與垂直方向波速不同。</li>
+<li><strong>LPO（晶格優選定向）</strong>：微觀礦物晶體順應流變方向排列。以<strong>橄欖石</strong>為例，其 [100] 軸方向 P 波速高達 9.89 km/s，而最慢方向僅 7.72 km/s，各向異性度達 25%。</li>
+</ol>
+<h4>兩種表現形式</h4>
+<ul>
+<li><strong>橫向各向同性（Transverse Isotropy）</strong>：具有一個對稱軸（通常為垂直軸），水平方向的性質處處相同。以 5 個獨立彈性常數描述（A, C, F, L, N）。</li>
+<li><strong>方位各向異性（Azimuthal Anisotropy）</strong>：P 波速隨水平方位呈 cos2θ 週期性變化，常見於大洋岩石圈與上地函，「快波軸」方向平行於板塊擴張方向。</li>
+</ul>
+</section><section class="topic-section" id="shear-wave-splitting"><h2 data-num="13">說明剪力波分裂</h2>
+<p><strong>剪力波分裂（Shear Wave Splitting）</strong>是各向異性最直觀的觀測證據。</p>
+<p>當一道偏振的剪力波進入各向異性介質時：</p>
+<ol>
+<li>波被分裂成<strong>兩道相互正交偏振</strong>的獨立波列。</li>
+<li>一道沿「快方向」傳播（速度較快），另一道沿「慢方向」傳播。</li>
+<li>兩道波到達測站的<strong>時間差 δt</strong>（通常 0–2 秒）即為分裂量。</li>
+</ol>
+<p>測量兩個參數：<strong>快波極化方位角 φ</strong>（反映各向異性的方向）與<strong>延遲時間 δt</strong>（反映各向異性的強度和路徑長度）。</p>
+<div class="key-point">💡 分裂後的快慢波在離開各向異性區域後仍然保持分離狀態（如圖 3.6-1 所示），這是得以在遠處測站觀測到分裂的關鍵原因。</div>
+</section><section class="topic-section" id="sks-splitting"><h2 data-num="14">為何使用 SKS 波相研究剪力波分裂？</h2>
+<p>SKS 波相是研究剪力波分裂的「黃金標準」，原因如下：</p>
+<ol>
+<li><strong>已知初始偏振</strong>：SKS 波從外核穿出地函時，因 S→K（P波）→S 的轉換過程，初始偏振完全限制在<strong>徑向方向（SV）</strong>。所有原始 SH 能量在下行 S 波遇到 CMB 時已被反射。</li>
+<li><strong>簡單的幾何</strong>：在等向性地球中，SKS 不應出現在<em>橫向分量（Transverse component）</em>上。因此，橫向分量上任何 SKS 訊號都直接指示各向異性的存在。</li>
+<li><strong>路徑清晰</strong>：SKS 從核幔邊界到測站近乎垂直上行，主要採樣的是地函和岩石圈的各向異性。</li>
+</ol>
+<p>分析方法：透過旋轉座標找到使橫向分量訊號最小化的 (φ, δt) 組合，即為最佳各向異性參數。</p>
+</section><section class="topic-section" id="fig-3-6"><h2 data-num="15">解釋圖 3.6-1 與 3.6-7</h2>
+<h4>📊 圖 3.6-1：剪力波分裂示意圖</h4>
+<p>展示一道初始為單一偏振方向的 S 波，依序通過等向性介質→各向異性介質→等向性介質的過程：</p>
+<ul>
+<li>進入各向異性區域前：只有一道波。</li>
+<li>進入後：分裂為兩道（S₁ 快波、S₂ 慢波），能量在兩道波間重新分配。</li>
+<li>離開後：<strong>兩道波保持分離狀態</strong>，在遠處仍可測量到時間差。</li>
+</ul>
+<h4>📊 圖 3.6-7：SKS 分裂實際觀測（紐西蘭）</h4>
+<p>三組圖展示了 Kuril Islands 地震在紐西蘭陣列記錄的 SKS 波處理過程：</p>
+<ul>
+<li><strong>上排（未校正）</strong>：徑向和橫向分量都出現 SKS 訊號。橫向分量不應有訊號→證明存在各向異性。</li>
+<li><strong>中排（旋轉至快/慢方向）</strong>：分離出快波 s₁ 和慢波 s₂ 的極化方向和時間差。</li>
+<li><strong>下排（校正後）</strong>：移除分裂效應後，所有 SKS 能量回到徑向分量，橫向分量歸零。</li>
+<li><strong>右方等值線圖</strong>：顯示最佳 (φ, δt) 的搜索結果，最小值對應最佳各向異性模型。</li>
+</ul>
+</section><section class="topic-section" id="attenuation"><h2 data-num="16">波傳遞時能量如何衰減？</h2>
+<p>地震波在傳播過程中振幅降低，主要有<strong>四大機制</strong>：</p>
+<table>
+<thead><tr><th>機制</th><th>類型</th><th>說明</th></tr></thead>
+<tbody>
+<tr><td><strong>幾何擴展</strong></td><td>彈性</td><td>波前面積擴大→能量密度下降。體波∝1/r；表面波∝1/√(sin Δ)</td></tr>
+<tr><td><strong>散射</strong></td><td>彈性</td><td>遇到與波長相近的構造異常→能量向四面八方散出→產生尾波(Coda)</td></tr>
+<tr><td><strong>多重路徑</strong></td><td>彈性</td><td>波速橫向變化導致聚焦/散焦（如透鏡效應）</td></tr>
+<tr><td><strong>滯彈性</strong></td><td>非彈性</td><td>內摩擦將動能轉為熱能→真正的能量損失。以品質因子 Q 量化</td></tr>
+</tbody>
+</table>
+<p>前三種是彈性過程（能量守恆，只是重新分配），只有<strong>滯彈性</strong>會造成能量的真正損失。</p>
+<div class="formula">振幅衰減：A(x) = A₀ · exp(−ωx / 2cQ)　→　Q 越小，衰減越快</div>
+</section><section class="topic-section" id="fig-3-7-1"><h2 data-num="17">解釋圖 3.7-1</h2>
+<h4>📊 圖 3.7-1：區域衰減差異地震記錄</h4>
+<p>展示 1995 年德州地震的兩筆記錄，分別位於：</p>
+<ul>
+<li><strong>內華達州（MNV, Δ=15°）</strong>：高頻成分明顯不足→波形較「鈍」。</li>
+<li><strong>密蘇里州（MM18, Δ=14°）</strong>：高頻成分豐富→波形較「尖銳」。</li>
+</ul>
+<p><strong>解讀</strong>：兩個測站的震央距幾乎相同，但西部美國（構造活躍帶）的<strong>Q 值遠低於</strong>中部穩定大陸區，因此高頻能量被強烈吸收。這直觀地展示了<em>衰減隨構造環境變化</em>的重要性——活躍帶溫度高、流體多，滯彈性效應大。</p>
+</section><section class="topic-section" id="fig-3-7-5"><h2 data-num="18">解釋圖 3.7-5</h2>
+<h4>📊 圖 3.7-5：速度異質體對波振幅的影響</h4>
+<p>此圖展示一道平面波通過一層<strong>厚度不均的折射層</strong>後的行為：</p>
+<ul>
+<li>射線會被異質體「聚焦」或「散焦」。</li>
+<li><strong>射線稀疏區</strong>→振幅低。</li>
+<li><strong>射線密集區</strong>→振幅高。</li>
+<li>極度密集處形成<strong>焦散線（Caustics）</strong>→振幅理論上趨於無限。</li>
+</ul>
+<p>這解釋了為何震源附近的小速度異常可在遠震距離產生大振幅變化，也可能導致震源機制與衰減估計的誤差（如圖 3.7-6 所示的偏差路徑問題）。</p>
+</section><section class="topic-section" id="fig-3-7-10"><h2 data-num="19">解釋圖 3.7-10</h2>
+<h4>📊 圖 3.7-10：地球 vs 月球的地震記錄</h4>
+<p>對比兩筆相似距離（~150 km）的地震記錄：</p>
+<table>
+<thead><tr><th>特徵</th><th>地球（CCM 站）</th><th>月球（Apollo 12）</th></tr></thead>
+<tbody>
+<tr><td>主要到達波</td><td>P 和 S 波清晰可辨</td><td>無法辨識</td></tr>
+<tr><td>尾波長度</td><td>短暫衰減</td><td>持續數十分鐘甚至小時</td></tr>
+<tr><td>高頻成分</td><td>快速被吸收</td><td>長久保留</td></tr>
+</tbody>
+</table>
+<p><strong>原因</strong>：地球地殼含有大量<em>粒間流體</em>，造成強烈的<strong>滯彈性衰減</strong>（能量→熱能），所以波迅速衰減。月球表面的<strong>破碎表岩屑（Regolith）</strong>雖造成劇烈<em>散射</em>，但由於極度乾燥（無流體），<strong>幾乎沒有滯彈性吸收</strong>，因此散射能量來回反覆，形成極長的尾波。</p>
+</section><section class="topic-section" id="fig-3-7-18"><h2 data-num="20">解釋圖 3.7-18</h2>
+<h4>📊 圖 3.7-18：美國地殼 Q<sub>Lg</sub> 分布圖</h4>
+<p>此圖利用 1 Hz <strong>Lg 波</strong>（地殼中傳播的高階面波疊加）的<strong>尾波衰減</strong>來繪製美國地殼的 Q 值分布。</p>
+<ul>
+<li><strong>東部穩定大陸區</strong>：Q<sub>Lg</sub> 高達 <strong>750</strong>（低衰減），地震波能傳播極遠且保留高頻。</li>
+<li><strong>西部活躍構造區</strong>：Q<sub>Lg</sub> 低至 <strong>250</strong>（高衰減），波迅速喪失高頻能量。</li>
+</ul>
+<p><strong>意涵</strong>：</p>
+<ol>
+<li><strong>地震災害</strong>：東部地震雖較少，但一旦發生可波及更廣範圍（因衰減低），如 1811–1812 年新馬德里地震。</li>
+<li><strong>核試驗監測</strong>：美國在西部高衰減區試驗核武，蘇聯在低衰減區。這對禁試條約的驗證有重要影響。</li>
+</ol>
+</section>
+
+<section class="topic-section" id="quiz">
+<h2>📝 隨堂小測驗</h2>
+<p>測試一下你對本章內容的理解！</p>
+<div class="quiz-container">
+
+<div class="quiz-q" id="qq0">
+<p class="q-text"><strong>Q1.</strong> Pn 波能夠超前 Pg 波成為初達波的原因是？</p>
+<div class="q-options">
+<button class="q-btn" onclick="checkAns(this,0)">Pn 的頻率較高</button><button class="q-btn" onclick="checkAns(this,1)">Pn 以地函的高波速傳遞，路徑雖長但更快</button><button class="q-btn" onclick="checkAns(this,0)">Pn 不受重力影響</button><button class="q-btn" onclick="checkAns(this,0)">Pn 是表面波</button>
+</div>
+<p class="q-feedback" style="display:none"></p>
+</div>
+
+<div class="quiz-q" id="qq1">
+<p class="q-text"><strong>Q2.</strong> 莫霍洛維奇發現 Moho 面的關鍵觀測是？</p>
+<div class="q-options">
+<button class="q-btn" onclick="checkAns(this,0)">礦物成分分析</button><button class="q-btn" onclick="checkAns(this,0)">重力異常</button><button class="q-btn" onclick="checkAns(this,1)">觀察到兩組不同波速的 P 波初達</button><button class="q-btn" onclick="checkAns(this,0)">地磁場反轉</button>
+</div>
+<p class="q-feedback" style="display:none"></p>
+</div>
+
+<div class="quiz-q" id="qq2">
+<p class="q-text"><strong>Q3.</strong> 射線參數 p 在數學上等於走時曲線的什麼？</p>
+<div class="q-options">
+<button class="q-btn" onclick="checkAns(this,0)">曲率</button><button class="q-btn" onclick="checkAns(this,1)">斜率 dT/dΔ</button><button class="q-btn" onclick="checkAns(this,0)">截距</button><button class="q-btn" onclick="checkAns(this,0)">面積</button>
+</div>
+<p class="q-feedback" style="display:none"></p>
+</div>
+
+<div class="quiz-q" id="qq3">
+<p class="q-text"><strong>Q4.</strong> 地球的 P 波陰影區大約在震央距多少度？</p>
+<div class="q-options">
+<button class="q-btn" onclick="checkAns(this,0)">0°–30°</button><button class="q-btn" onclick="checkAns(this,0)">30°–60°</button><button class="q-btn" onclick="checkAns(this,1)">98°–145°</button><button class="q-btn" onclick="checkAns(this,0)">150°–180°</button>
+</div>
+<p class="q-feedback" style="display:none"></p>
+</div>
+
+<div class="quiz-q" id="qq4">
+<p class="q-text"><strong>Q5.</strong> SKS 波相用於剪力波分裂研究的主要原因是？</p>
+<div class="q-options">
+<button class="q-btn" onclick="checkAns(this,0)">SKS 振幅最大</button><button class="q-btn" onclick="checkAns(this,1)">SKS 的初始偏振方向已知</button><button class="q-btn" onclick="checkAns(this,0)">SKS 不經過地函</button><button class="q-btn" onclick="checkAns(this,0)">SKS 是表面波</button>
+</div>
+<p class="q-feedback" style="display:none"></p>
+</div>
+
+<div class="quiz-q" id="qq5">
+<p class="q-text"><strong>Q6.</strong> Q 值較低代表什麼？</p>
+<div class="q-options">
+<button class="q-btn" onclick="checkAns(this,0)">衰減較弱</button><button class="q-btn" onclick="checkAns(this,1)">衰減較強</button><button class="q-btn" onclick="checkAns(this,0)">波速較快</button><button class="q-btn" onclick="checkAns(this,0)">頻率較高</button>
+</div>
+<p class="q-feedback" style="display:none"></p>
+</div>
+
+<div class="quiz-q" id="qq6">
+<p class="q-text"><strong>Q7.</strong> 月球地震記錄中尾波持續極長的原因是？</p>
+<div class="q-options">
+<button class="q-btn" onclick="checkAns(this,0)">月球內部溫度極高</button><button class="q-btn" onclick="checkAns(this,1)">月球表面散射強但滯彈性吸收極弱</button><button class="q-btn" onclick="checkAns(this,0)">月球有厚大氣層</button><button class="q-btn" onclick="checkAns(this,0)">月球有液態核心</button>
+</div>
+<p class="q-feedback" style="display:none"></p>
+</div>
+
+<div class="quiz-q" id="qq7">
+<p class="q-text"><strong>Q8.</strong> 三合點（Triplication）現象發生在？</p>
+<div class="q-options">
+<button class="q-btn" onclick="checkAns(this,1)">波速急遽增加的不連續面</button><button class="q-btn" onclick="checkAns(this,0)">波速均勻的區域</button><button class="q-btn" onclick="checkAns(this,0)">地表</button><button class="q-btn" onclick="checkAns(this,0)">液態外核</button>
+</div>
+<p class="q-feedback" style="display:none"></p>
+</div>
+
+<div id="quiz-result" style="display:none;margin-top:30px;padding:20px;border-radius:12px;background:rgba(0,210,255,0.1);text-align:center;">
+<h3 id="quiz-score"></h3>
+</div>
+<button class="quiz-submit" onclick="showScore()">查看成績</button>
+</div>
+</section>
+
+</main>
+
+<footer>
+<p>📖 內容來源：Seismology and Earth Structure, Chapter 3</p>
+<p>© 2025 地震學互動學習頁面 — Designed for GitHub Pages</p>
+</footer>
+
+<script>
+// Progress bar
+window.addEventListener('scroll',()=>{
+const h=document.documentElement,b=document.body;
+const p=(h.scrollTop||b.scrollTop)/((h.scrollHeight||b.scrollHeight)-h.clientHeight)*100;
+document.getElementById('progressBar').style.width=p+'%';
+});
+
+// Active nav
+const sections=document.querySelectorAll('.topic-section');
+const navLinks=document.querySelectorAll('.toc a');
+const obs=new IntersectionObserver(es=>{
+es.forEach(e=>{if(e.isIntersecting){
+navLinks.forEach(l=>l.classList.remove('active'));
+const a=document.querySelector('.toc a[href="#'+e.target.id+'"]');
+if(a){a.classList.add('active');a.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'})}
+}});
+},{threshold:0.3});
+sections.forEach(s=>obs.observe(s));
+
+// Quiz
+let score=0,answered=0;
+function checkAns(btn,correct){
+const q=btn.closest('.quiz-q');
+if(q.classList.contains('done'))return;
+q.classList.add('done');
+answered++;
+const btns=q.querySelectorAll('.q-btn');
+btns.forEach(b=>{b.classList.add('disabled');if(b===btn)b.classList.add(correct?'correct':'wrong')});
+if(correct){score++;}
+else{btns.forEach(b=>{const c=b.getAttribute('onclick');if(c&&c.includes(',1)'))b.classList.add('correct')})}
+}
+function showScore(){
+const r=document.getElementById('quiz-result');
+r.style.display='block';
+document.getElementById('quiz-score').textContent=
+'你答對了 '+score+' / '+8+' 題！'+(score>=6?' 🎉 太棒了！':score>=4?' 👍 不錯，繼續加油！':' 📚 建議複習一下喔！');
+}
+</script>
+</body>
+</html>
