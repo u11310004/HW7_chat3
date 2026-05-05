@@ -43,6 +43,8 @@ a{color:var(--accent);text-decoration:none}
 .diagram-box{background:rgba(0,0,0,0.3);border-radius:12px;padding:20px;margin:20px 0;text-align:center}
 .diagram-box h4{margin-bottom:12px}
 .caption{color:var(--text2);font-size:13px;margin-top:8px}
+.fig-img{width:100%;max-width:750px;border-radius:10px;border:1px solid var(--border);margin:16px auto;display:block}
+.fig-label{text-align:center;color:var(--text2);font-size:13px;margin-top:6px;margin-bottom:12px}
 
 /* Topic number badge */
 .topic-section h2::before{content:attr(data-num);display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:14px;font-weight:700;margin-right:12px;vertical-align:middle}
@@ -269,6 +271,8 @@ footer{text-align:center;padding:40px;color:var(--text2);font-size:13px;border-t
 </ol>
 <p>測量兩個參數：<strong>快波極化方位角 φ</strong>（反映各向異性的方向）與<strong>延遲時間 δt</strong>（反映各向異性的強度和路徑長度）。</p>
 <div class="key-point">💡 分裂後的快慢波在離開各向異性區域後仍然保持分離狀態（如圖 3.6-1 所示），這是得以在遠處測站觀測到分裂的關鍵原因。</div>
+<img class="fig-img" src="PICTURE/3.6-1.png" alt="圖 3.6-1：剪力波分裂示意圖">
+<p class="fig-label">▲ 圖 3.6-1：S 波通過各向異性介質後分裂為快波與慢波</p>
 </section><section class="topic-section" id="sks-splitting"><h2 data-num="14">為何使用 SKS 波相研究剪力波分裂？</h2>
 <p>SKS 波相是研究剪力波分裂的「黃金標準」，原因如下：</p>
 <ol>
@@ -279,6 +283,8 @@ footer{text-align:center;padding:40px;color:var(--text2);font-size:13px;border-t
 <p>分析方法：透過旋轉座標找到使橫向分量訊號最小化的 (φ, δt) 組合，即為最佳各向異性參數。</p>
 </section><section class="topic-section" id="fig-3-6"><h2 data-num="15">解釋圖 3.6-1 與 3.6-7</h2>
 <h4>📊 圖 3.6-1：剪力波分裂示意圖</h4>
+<img class="fig-img" src="PICTURE/3.6-1.png" alt="圖 3.6-1：剪力波分裂示意圖">
+<p class="fig-label">▲ 圖 3.6-1</p>
 <p>展示一道初始為單一偏振方向的 S 波，依序通過等向性介質→各向異性介質→等向性介質的過程：</p>
 <ul>
 <li>進入各向異性區域前：只有一道波。</li>
@@ -286,6 +292,8 @@ footer{text-align:center;padding:40px;color:var(--text2);font-size:13px;border-t
 <li>離開後：<strong>兩道波保持分離狀態</strong>，在遠處仍可測量到時間差。</li>
 </ul>
 <h4>📊 圖 3.6-7：SKS 分裂實際觀測（紐西蘭）</h4>
+<img class="fig-img" src="PICTURE/3.6-7.png" alt="圖 3.6-7：SKS 分裂實際觀測">
+<p class="fig-label">▲ 圖 3.6-7</p>
 <p>三組圖展示了 Kuril Islands 地震在紐西蘭陣列記錄的 SKS 波處理過程：</p>
 <ul>
 <li><strong>上排（未校正）</strong>：徑向和橫向分量都出現 SKS 訊號。橫向分量不應有訊號→證明存在各向異性。</li>
@@ -308,6 +316,8 @@ footer{text-align:center;padding:40px;color:var(--text2);font-size:13px;border-t
 <div class="formula">振幅衰減：A(x) = A₀ · exp(−ωx / 2cQ)　→　Q 越小，衰減越快</div>
 </section><section class="topic-section" id="fig-3-7-1"><h2 data-num="17">解釋圖 3.7-1</h2>
 <h4>📊 圖 3.7-1：區域衰減差異地震記錄</h4>
+<img class="fig-img" src="PICTURE/3.7-1.png" alt="圖 3.7-1：區域衰減差異地震記錄">
+<p class="fig-label">▲ 圖 3.7-1</p>
 <p>展示 1995 年德州地震的兩筆記錄，分別位於：</p>
 <ul>
 <li><strong>內華達州（MNV, Δ=15°）</strong>：高頻成分明顯不足→波形較「鈍」。</li>
@@ -316,6 +326,8 @@ footer{text-align:center;padding:40px;color:var(--text2);font-size:13px;border-t
 <p><strong>解讀</strong>：兩個測站的震央距幾乎相同，但西部美國（構造活躍帶）的<strong>Q 值遠低於</strong>中部穩定大陸區，因此高頻能量被強烈吸收。這直觀地展示了<em>衰減隨構造環境變化</em>的重要性——活躍帶溫度高、流體多，滯彈性效應大。</p>
 </section><section class="topic-section" id="fig-3-7-5"><h2 data-num="18">解釋圖 3.7-5</h2>
 <h4>📊 圖 3.7-5：速度異質體對波振幅的影響</h4>
+<img class="fig-img" src="PICTURE/3.7-5.png" alt="圖 3.7-5：速度異質體對波振幅的影響">
+<p class="fig-label">▲ 圖 3.7-5</p>
 <p>此圖展示一道平面波通過一層<strong>厚度不均的折射層</strong>後的行為：</p>
 <ul>
 <li>射線會被異質體「聚焦」或「散焦」。</li>
@@ -326,6 +338,8 @@ footer{text-align:center;padding:40px;color:var(--text2);font-size:13px;border-t
 <p>這解釋了為何震源附近的小速度異常可在遠震距離產生大振幅變化，也可能導致震源機制與衰減估計的誤差（如圖 3.7-6 所示的偏差路徑問題）。</p>
 </section><section class="topic-section" id="fig-3-7-10"><h2 data-num="19">解釋圖 3.7-10</h2>
 <h4>📊 圖 3.7-10：地球 vs 月球的地震記錄</h4>
+<img class="fig-img" src="PICTURE/3.7-10.png" alt="圖 3.7-10：地球 vs 月球的地震記錄">
+<p class="fig-label">▲ 圖 3.7-10</p>
 <p>對比兩筆相似距離（~150 km）的地震記錄：</p>
 <table>
 <thead><tr><th>特徵</th><th>地球（CCM 站）</th><th>月球（Apollo 12）</th></tr></thead>
@@ -338,6 +352,8 @@ footer{text-align:center;padding:40px;color:var(--text2);font-size:13px;border-t
 <p><strong>原因</strong>：地球地殼含有大量<em>粒間流體</em>，造成強烈的<strong>滯彈性衰減</strong>（能量→熱能），所以波迅速衰減。月球表面的<strong>破碎表岩屑（Regolith）</strong>雖造成劇烈<em>散射</em>，但由於極度乾燥（無流體），<strong>幾乎沒有滯彈性吸收</strong>，因此散射能量來回反覆，形成極長的尾波。</p>
 </section><section class="topic-section" id="fig-3-7-18"><h2 data-num="20">解釋圖 3.7-18</h2>
 <h4>📊 圖 3.7-18：美國地殼 Q<sub>Lg</sub> 分布圖</h4>
+<img class="fig-img" src="PICTURE/3.7-18.png" alt="圖 3.7-18：美國地殼 QLg 分布圖">
+<p class="fig-label">▲ 圖 3.7-18</p>
 <p>此圖利用 1 Hz <strong>Lg 波</strong>（地殼中傳播的高階面波疊加）的<strong>尾波衰減</strong>來繪製美國地殼的 Q 值分布。</p>
 <ul>
 <li><strong>東部穩定大陸區</strong>：Q<sub>Lg</sub> 高達 <strong>750</strong>（低衰減），地震波能傳播極遠且保留高頻。</li>
